@@ -5,13 +5,14 @@ dmenu_cmd="dmenu -nb $color0 -nf $color15 -sb $color1 -sf $color15"
 theme_dir="$HOME/.local/share/wal-themes"
 name="$(basename $0)"
 usage_message="Usage:
-        $name                   choose a theme using dmenu
+        $name                   choose a theme using dmenu and apply it
         $name h/-h/--help       print this help and exit
         $name l                 list valid theme names
         $name r                 apply random theme
+        $name s                 select theme graphically and apply it
         $name a [THEME]         apply THEME
         $name n [THEME]         create 'THEME' from current pywal cache
-        $name e [THEME]         open THEME's colours.json with $EDITOR
+        $name e [THEME]         open THEME's colours.json with \$EDITOR ($EDITOR)
         $name d [THEME]         delete THEME
         $name u [THEME]         write current pywal configuration to 'THEME'"
 
