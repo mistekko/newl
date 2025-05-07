@@ -1,5 +1,6 @@
 * newl
 
+#+attr_html: :width 400px
 [[./preview.gif]]
 
 newl is a Pywal theme manager which encourages the user to store and manually tweak their themes rather than simply passing an argument to the `-i` flag and calling it a day.
