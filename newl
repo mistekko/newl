@@ -1,0 +1,122 @@
+#! /usr/bin/env sh
+
+. "$HOME/.cache/wal/colors.sh"
+dmenu_cmd="dmenu -nb $color0 -nf $color15 -sb $color1 -sf $color15"
+theme_dir="$HOME/.local/share/wal-themes"
+name="$(basename $0)"
+usage_message="Usage:
+        $name                   choose a theme using dmenu
+        $name h/-h/--help       print this help and exit
+        $name l                 list valid theme names
+        $name r                 apply random theme
+        $name a [THEME]         apply THEME
+        $name n [THEME]         create 'THEME' from current pywal cache
+        $name e [THEME]         open THEME's colours.json with $EDITOR
+        $name d [THEME]         delete THEME
+        $name u [THEME]         write current pywal configuration to 'THEME'"
+
+ensure_theme () {
+	if [ -z "$arg" ]; then
+		theme="$(ls "$theme_dir" | $dmenu_cmd)"
+		[ -n "$theme" ] && $0 $command "$theme"
+		exit
+	fi
+}
+
+validate_theme () {
+	[ -d "$theme_dir/$arg" ] && return 0
+}
+
+get_current_if_ours () {
+	test="$(basename "$(grep "wallpaper" \
+	                         "$HOME/.cache/wal/colors.json" |
+	                    sed 's+/[^/]*/[^/]*$++g')")"
+	if [ "$test" = "$(basename "$theme_dir")" ]; then
+		arg="$(grep "wallpaper" \
+		            "$HOME/.cache/wal/colors.json" |
+		       sed 's+/[^/]*$++g')"
+		arg="$(basename "$arg")"
+		return 0
+	else
+		echo "Current theme is not managed by newl" >&2
+		return 1
+	fi
+}
+
+ensure_arg_c_possible () {
+	if [ "$arg" = "c" ]; then
+		get_current_if_ours || exit
+	fi
+	ensure_theme
+	if ! validate_theme; then
+		echo "'$arg' is not a valid theme"
+		exit 1
+	fi
+}
+
+command="$1"
+arg="$2"
+
+case "$command" in
+	"")
+		$0 a ;;
+	"h"|"-h"|"--help")
+		echo "$usage_message" ;;
+	"l")
+		ls "$theme_dir" ;;
+	"r")
+		newl a "$(newl l | shuf -n 1)" ;;
+	"s")
+		newl a "$(basename "$(sxiv -bort "$theme_dir" |
+		                          sed 's+/wallpaper$++g')")" ||
+		        echo "Do not pick more than 1 image" ;;
+	"n")
+		if [ -z "$2" ]; then
+			echo "You must supply a name for the new theme"
+			exit 1
+		elif validate_theme && [ -z "$3" ]; then
+			echo "A theme named '$arg' already exists" \
+		             "To update it, use the 'u' command" >&2
+			exit 1
+		fi
+		# extracts filename from JSON
+		wp="$(grep wallpaper $HOME/.cache/wal/colors.json |
+				      cut -c 19- | sed s/..$//g)"
+		colours="$HOME/.cache/wal/colors.json"
+		mkdir -p "$theme_dir/$arg"
+		cp -f "$wp" "$theme_dir/$arg/wallpaper"
+		colours_dest="$theme_dir/$arg/colours.json"
+		cat "$colours" | head -n 2 > "$colours_dest"
+		echo "    \"wallpaper\": \"$theme_dir/$arg/wallpaper\"," \
+		     >> "$colours_dest"
+		cat "$colours" | tail -n 26 >> "$colours_dest" ;;
+	"a")
+		ensure_theme
+		if [ ! validate_theme ]; then
+			echo -e "'$arg' is not a valid theme."
+		fi
+		prefix="$theme_dir/$arg"
+		wal -f "$prefix/colours.json" > /dev/null
+		alpha="$(grep "\"alpha\": \"" "$prefix/colours.json" |
+		         grep -o -E "[0-9]{2}[0-9]?")"
+		emacsclient -ue "(progn (load-theme 'ewal-spacemacs-modern)
+		                        (set-opacity $alpha))" &
+		xrdb "$XDG_CONFIG_HOME/X11/Xresources" > /dev/null &
+		pywalfox update > /dev/null &
+		dwmc xrdb & ;;
+	"e")
+		ensure_arg_c_possible
+		$EDITOR "$theme_dir/$arg/colours.json" ;;
+	"d")
+		ensure_arg_c_possible
+		rm -r "$theme_dir/$arg" ;;
+	"u")
+		ensure_theme
+		if ! validate_theme; then
+			echo "'$arg' is not a valid theme"
+			exit 1
+		fi
+		$0 n "$arg" "--force";;
+	*)
+		echo "'$command' is not a valid command" >&2 ;;
+esac
