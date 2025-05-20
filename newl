@@ -14,7 +14,8 @@ usage_message="Usage:
         $name n [THEME]         create 'THEME' from current pywal cache
         $name e [THEME]         open THEME's colours.json with \$EDITOR ($EDITOR)
         $name d [THEME]         delete THEME
-        $name u [THEME]         write current pywal configuration to 'THEME'"
+        $name u [THEME]         write current pywal configuration to 'THEME'
+        $name i [THEME]         print info on current wallpaper if it is stored"
 
 ensure_theme () {
 	if [ -z "$arg" ]; then
@@ -105,6 +106,9 @@ case "$command" in
 		xrdb "$XDG_CONFIG_HOME/X11/Xresources" > /dev/null &
 		pywalfox update > /dev/null &
 		dwmc xrdb & ;;
+	"i")
+		ensure_arg_c_possible
+		[ -e "$theme_dir/$arg/info" ] && cat "$theme_dir/$arg/info" ;;
 	"e")
 		ensure_arg_c_possible
 		$EDITOR "$theme_dir/$arg/colours.json" ;;
