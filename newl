@@ -12,21 +12,25 @@ usage_message="Usage:
         $name s                 select theme graphically and apply it
         $name a [THEME]         apply THEME
         $name n [THEME]         create 'THEME' from current pywal cache
-        $name e [THEME]         open THEME's colours.json with \$EDITOR ($EDITOR)
+        $name e [THEME]         open THEME's colours.json in \$EDITOR ($EDITOR)
         $name d [THEME]         delete THEME
         $name u [THEME]         write current pywal configuration to 'THEME'
-        $name i [THEME]         print info on current wallpaper if it is stored"
+        $name i [THEME]         print info on current wallpaper if such exists"
 
 ensure_theme () {
 	if [ -z "$arg" ]; then
-		theme="$(ls "$theme_dir" | $dmenu_cmd)"
-		[ -n "$theme" ] && $0 "$command" "$theme"
-		exit
+		arg="$(ls "$theme_dir" | $dmenu_cmd)"
+		[ -z "$arg" ] &&
+			echo "No theme chosen." >&2 &&
+			return 1
 	fi
+	validate_theme || (echo "'$arg' is not a valid theme." >&2 &&
+			   return 1)
 }
 
 validate_theme () {
 	[ -d "$theme_dir/$arg" ] && return 0
+	return 1
 }
 
 get_current_if_ours () {
@@ -46,12 +50,9 @@ get_current_if_ours () {
 }
 
 ensure_arg_c_possible () {
-	if [ "$arg" = "c" ]; then
-		get_current_if_ours || exit
-	fi
-	ensure_theme
-	if ! validate_theme; then
-		echo "'$arg' is not a valid theme"
+	if  ! [ "$arg" = "c" ] || ! get_current_if_ours &&
+	    ! ensure_theme; then
+		echo "Exiting..."
 		exit 1
 	fi
 }
@@ -69,9 +70,13 @@ case "$command" in
 	"r")
 		newl a "$(newl l | shuf -n 1)" ;;
 	"s")
-		newl a "$(basename "$(sxiv -bort "$theme_dir" |
-		                          sed 's+/wallpaper$++g')")" ||
-		        echo "Do not pick more than 1 image" ;;
+		arg="$(sxiv -bort "$HOME/.local/share/wal-themes")"
+		if [ -z "$arg" ]; then
+			echo "No theme selected. Exiting..."
+			exit 1
+		fi
+		arg="$(echo "$arg" | sed 's+/wallpaper$++g' | xargs basename)"
+	        newl a "$arg" ;;
 	"n")
 		if [ -z "$2" ]; then
 			echo "You must supply a name for the new theme"
@@ -94,10 +99,6 @@ case "$command" in
 	        tail -n 26 "$colours" >> "$colours_dest" ;;
 	"a")
 		ensure_arg_c_possible
-		if ! validate_theme; then
-			echo "'$arg' is not a valid theme."
-			exit 1
-		fi
 		prefix="$theme_dir/$arg"
 		wal -f "$prefix/colours.json" > /dev/null
 		alpha="$(grep "\"alpha\": \"" "$prefix/colours.json" |
@@ -114,15 +115,17 @@ case "$command" in
 		ensure_arg_c_possible
 		$EDITOR "$theme_dir/$arg/colours.json" ;;
 	"d")
+		if [ -z "$arg" ]; then
+			echo "To prevent irreversible deletion of the wrong" \
+			     "theme, $name requires explicit specification of" \
+			     "target"
+			exit 1
+		fi
 		ensure_arg_c_possible
 		rm -r "$theme_dir/$arg" ;;
 	"u")
-		ensure_theme
-		if ! validate_theme; then
-			echo "'$arg' is not a valid theme"
-			exit 1
-		fi
-		$0 n "$arg" "--force";;
+		ensure_arg_c_possible
+		$0 n "$arg" "--force" ;;
 	*)
 		echo "'$command' is not a valid command" >&2 ;;
 esac
