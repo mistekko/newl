@@ -1,0 +1,40 @@
+newl # output is identical to that of `newl a THEME'
+
+newl h # help is printed
+newl -h # help is printed
+newl --help # help is printed
+
+newl l # contents of theme_dir are listed
+
+newl r # random theme is set gracefully
+
+newl s # select a theme > theme is set
+newl s # select two themes > first theme is set
+newl s # select no themes > program is gracefully exited
+
+newl n # errors out
+newl n THEME # creates new theme; verify with newl a THEME, newl e c
+newl n EXISTING_THEME # errors out
+
+newl a # select theme > theme is set
+newl a c # > current theme is refreshed
+newl a THEME # > theme is set
+newl a NONSENSE_THEME # > theme is not set (i.e., no command is sent), error message is printed
+
+newl i THEME # if info exists, it is printed; otherwise nothing is printed
+newl i c # ditto
+newl i # select theme > ditto
+
+newl e THEME # THEME exists: opened in $EDITOR ; otherwise, error is printed
+newl e c # theme exists and "is managed by newl": ditto; otherwise, error is printed;
+newl e # select theme > theme is opened in $EDITOR
+
+newl d THEME # THEME is deleted
+newl d c # ditto but THEME is current theme; errors out if current theme is "not managed by newl"
+newl d # you need to specify a theme explicitly
+
+newl u THEME # current settings (according to wal) are applied to THEME
+newl u c # ditto but THEME is current theme; errors out if current theme is "not managed by newl"
+newl u # select theme > updated
+
+newl NON_VALID_COMMAND # errors out
