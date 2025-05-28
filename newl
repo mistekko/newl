@@ -1,9 +1,9 @@
 #! /usr/bin/env sh
 
 . "$HOME/.cache/wal/colors.sh"
-dmenu_cmd="dmenu_run -nb $color0 -nf $color7 -sb $color9 -sf $color15"
+dmenu_cmd="dmenu -nb $color0 -nf $color7 -sb $color9 -sf $color15"
 theme_dir="$HOME/.local/share/wal-themes"
-name="$(basename $0)"
+name="$(basename "$0")"
 usage_message="Usage:
         $name                   choose a theme using dmenu and apply it
         $name h/-h/--help       print this help and exit
@@ -20,7 +20,7 @@ usage_message="Usage:
 ensure_theme () {
 	if [ -z "$arg" ]; then
 		theme="$(ls "$theme_dir" | $dmenu_cmd)"
-		[ -n "$theme" ] && $0 $command "$theme"
+		[ -n "$theme" ] && $0 "$command" "$theme"
 		exit
 	fi
 }
@@ -82,20 +82,21 @@ case "$command" in
 			exit 1
 		fi
 		# extracts filename from JSON
-		wp="$(grep wallpaper $HOME/.cache/wal/colors.json |
+		wp="$(grep wallpaper "$HOME/.cache/wal/colors.json" |
 				      cut -c 19- | sed s/..$//g)"
 		colours="$HOME/.cache/wal/colors.json"
 		mkdir -p "$theme_dir/$arg"
 		cp -f "$wp" "$theme_dir/$arg/wallpaper"
 		colours_dest="$theme_dir/$arg/colours.json"
-		cat "$colours" | head -n 2 > "$colours_dest"
+		head -n 2 "$colours" > "$colours_dest"
 		echo "    \"wallpaper\": \"$theme_dir/$arg/wallpaper\"," \
 		     >> "$colours_dest"
-		cat "$colours" | tail -n 26 >> "$colours_dest" ;;
+	        tail -n 26 "$colours" >> "$colours_dest" ;;
 	"a")
-		ensure_theme
-		if [ ! validate_theme ]; then
-			echo -e "'$arg' is not a valid theme."
+		ensure_arg_c_possible
+		if ! validate_theme; then
+			echo "'$arg' is not a valid theme."
+			exit 1
 		fi
 		prefix="$theme_dir/$arg"
 		wal -f "$prefix/colours.json" > /dev/null
