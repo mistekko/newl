@@ -50,8 +50,13 @@ get_current_if_ours () {
 }
 
 ensure_arg_c_possible () {
-	if  ! [ "$arg" = "c" ] || ! get_current_if_ours &&
-	    ! ensure_theme; then
+	failure=""
+	if [ "$arg" = "c" ]; then
+		get_current_if_ours || failure="y"
+	else
+		ensure_theme || failure="y"
+	fi
+	if [ $failure ]; then
 		echo "Exiting..."
 		exit 1
 	fi
