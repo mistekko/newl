@@ -1,7 +1,7 @@
 #! /usr/bin/env sh
 
 . "$HOME/.cache/wal/colors.sh"
-dmenu_cmd="dmenu -nb $color0 -nf $color7 -sb $color9 -sf $color15"
+dmenu_cmd="dmenu -p theme:  -nb $color0 -nf $color7 -sb $color9 -sf $color15"
 theme_dir="$HOME/.local/share/wal-themes"
 name="$(basename "$0")"
 usage_message="Usage:
