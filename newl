@@ -96,7 +96,7 @@ case "$command" in
 				      cut -c 19- | sed s/..$//g)"
 		colours="$HOME/.cache/wal/colors.json"
 		mkdir -p "$theme_dir/$arg"
-		cp -f "$wp" "$theme_dir/$arg/wallpaper"
+		[ "$wp" != "None" ] && cp -f "$wp" "$theme_dir/$arg/wallpaper"
 		colours_dest="$theme_dir/$arg/colours.json"
 		head -n 2 "$colours" > "$colours_dest"
 		echo "    \"wallpaper\": \"$theme_dir/$arg/wallpaper\"," \
