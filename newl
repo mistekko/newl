@@ -3,6 +3,8 @@
 . "$HOME/.cache/wal/colors.sh"
 dmenu_cmd="dmenu -p theme:  -nb $color0 -nf $color7 -sb $color9 -sf $color15"
 theme_dir="$HOME/.local/share/wal-themes"
+icon_size="16"
+isxis="${icon_size}x${icon_size}"
 name="$(basename "$0")"
 usage_message="Usage:
         $name                   choose a theme using dmenu and apply it
@@ -92,16 +94,22 @@ case "$command" in
 			exit 1
 		fi
 		# extracts filename from JSON
-		wp="$(grep wallpaper "$HOME/.cache/wal/colors.json" |
+		dest_dir="$theme_dir/$arg"
+		wp_orig="$(grep wallpaper "$HOME/.cache/wal/colors.json" |
 				      cut -c 19- | sed s/..$//g)"
-		colours="$HOME/.cache/wal/colors.json"
-		mkdir -p "$theme_dir/$arg"
-		[ "$wp" != "None" ] && cp -f "$wp" "$theme_dir/$arg/wallpaper"
-		colours_dest="$theme_dir/$arg/colours.json"
-		head -n 2 "$colours" > "$colours_dest"
-		echo "    \"wallpaper\": \"$theme_dir/$arg/wallpaper\"," \
+		colours_orig="$HOME/.cache/wal/colors.json"
+		wp_dest="$dest_dir/wallpaper"
+		colours_dest="$dest_dir/colours.json"
+		mkdir -p "$dest_dir"
+		[ "$wp_orig" != "None" ] && cp -f "$wp_orig" "$wp_dest"
+		# Fix paths; we could use sed but that'd be unreadable and
+		# unnecessarily complex
+		head -n 2 "$colours_orig" > "$colours_dest"
+		echo "    \"wallpaper\": \"$wp_dest\"," \
 		     >> "$colours_dest"
-	        tail -n 26 "$colours" >> "$colours_dest" ;;
+	        tail -n 26 "$colours_orig" >> "$colours_dest"
+		magick "$wp_dest" -scale x${icon_size} - |
+			magick - -crop $isxis -format png - > "$dest_dir/icon";;
 	"a")
 		ensure_arg_c_possible
 		prefix="$theme_dir/$arg"

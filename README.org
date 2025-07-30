@@ -3,11 +3,11 @@
 #+attr_html: :width 400px
 [[./preview.gif]]
 
-newl is a Pywal theme manager which encourages the user to store and manually tweak their themes rather than simply passing an argument to the `-i` flag and calling it a day.
+newl is a Pywal theme manager which encourages the user to store and manually tweak their themes rather than simply passing an argument to the =-i= flag and calling it a day.
 
 ** Features
 
-- pick your theme from the command line, via dmenu, or graphically with [n]sxiv
+- pick your theme from the command line, via dmenu, or graphically via =[n]sxiv=
 - edit, update, or delete active theme with a single command
 - set a random theme
 
@@ -16,14 +16,15 @@ newl is a Pywal theme manager which encourages the user to store and manually tw
 Installation of shell scripts is trivial: simply place it in a directory in your =$PATH=. 
 
 *** Required dependencies
-- =dmenu=
-- =Pywal16=
+- dmenu
+- Pywal16
+- ImageMagick (for icon creation; newl'll run without, but it'll print a few errors)
 
 *** Optional dependencies
 Use of these programs is hardcoded into the source, but it's trivial to remove them and replace them with whatever you find more suitable.
-- =emacs=
-- =pywalfox=
-- =dwm= with =dwmc= and =xrdb= patches
+- emacs
+- pywalfox
+- dwm with the dwmc and xrdb patches
 
 ** Usage
 
