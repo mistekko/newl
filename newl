@@ -9,15 +9,24 @@ name="$(basename "$0")"
 usage_message="Usage:
         $name                   choose a theme using dmenu and apply it
         $name h/-h/--help       print this help and exit
+
+        $name a THEME           apply THEME
+        $name d THEME           delete THEME
+        $name e THEME           open THEME's colours.json in \$EDITOR ($EDITOR)
+        $name i THEME           print info on current wallpaper if such exists
         $name l                 list valid theme names
+	$name l-icewm-menu      format list of themes for an icewm menu entry
+        $name n THEME           create 'THEME' from current pywal cache
+	$name p THEME           edit a theme's post-application script (coming soon)
         $name r                 apply random theme
         $name s                 select theme graphically and apply it
-        $name a [THEME]         apply THEME
-        $name n [THEME]         create 'THEME' from current pywal cache
-        $name e [THEME]         open THEME's colours.json in \$EDITOR ($EDITOR)
-        $name d [THEME]         delete THEME
-        $name u [THEME]         write current pywal configuration to 'THEME'
-        $name i [THEME]         print info on current wallpaper if such exists"
+        $name u THEME           write current pywal configuration to 'THEME'"
+
+
+validate_theme () {
+	[ -d "$theme_dir/$arg" ] && return 0
+	return 1
+}
 
 ensure_theme () {
 	if [ -z "$arg" ]; then
@@ -28,11 +37,6 @@ ensure_theme () {
 	fi
 	validate_theme || (echo "'$arg' is not a valid theme." >&2 &&
 			   return 1)
-}
-
-validate_theme () {
-	[ -d "$theme_dir/$arg" ] && return 0
-	return 1
 }
 
 get_current_if_ours () {
@@ -74,10 +78,14 @@ case "$command" in
 		echo "$usage_message" ;;
 	"l")
 		ls "$theme_dir" ;;
+	"l-icewm-menu")
+		for theme in $(ls "$theme_dir"); do
+			echo "prog \"$theme\" \"$theme_dir/$theme/icon\" newl a \"$theme\""
+		done ;;
 	"r")
 		newl a "$(newl l | shuf -n 1)" ;;
 	"s")
-		arg="$(sxiv -bort "$HOME/.local/share/wal-themes")"
+		arg="$(sxiv -bort "$HOME/.local/share/wal-themes"/*/wallpaper)"
 		if [ -z "$arg" ]; then
 			echo "No theme selected. Exiting..."
 			exit 1
@@ -127,6 +135,15 @@ case "$command" in
 	"e")
 		ensure_arg_c_possible
 		$EDITOR "$theme_dir/$arg/colours.json" ;;
+	"p")
+		ensure_arg_c_possible
+		if [ -e "$theme_dir/$arg/post-app.sh" ]; then
+			$EDITOR "$theme_dir/$arg/post-app.sh"
+		else
+			printf "#! /usr/bin/env sh\n\n" > \
+			       "$theme_dir/$arg/post-app.sh"
+			$0 p "$arg"
+		fi ;;
 	"d")
 		if [ -z "$arg" ]; then
 			echo "To prevent irreversible deletion of the wrong" \
