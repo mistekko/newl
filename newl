@@ -15,7 +15,7 @@ usage_message="Usage:
         $name l                 list valid theme names
 	$name l-icewm-menu      format list of themes for an icewm menu entry
         $name n THEME           create 'THEME' from current pywal cache
-	$name p THEME           edit a theme's post-application script (coming soon)
+	$name p THEME           edit a theme's post-application script
         $name r                 apply random theme
         $name s                 select theme graphically and apply it
         $name u THEME           write current pywal configuration to 'THEME'"
