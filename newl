@@ -99,7 +99,8 @@ case "$command" in
 	"r")
 		newl a "$(newl l | shuf -n 1)" ;;
 	"s")
-		arg="$(sxiv -bort "$HOME/.local/share/wal-themes"/*/wallpaper)"
+		# customise WM_CLASS/instance so our sxiv can be targeted by WMs
+		arg="$(sxiv -N "newl" -bort "$HOME/.local/share/wal-themes"/*/wallpaper)"
 		if [ -z "$arg" ]; then
 			echo "No theme selected. Exiting..."
 			exit 1
