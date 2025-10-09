@@ -1,4 +1,4 @@
-newl # output is identical to that of `newl a THEME'
+newl # output is identical to that of `newl a'
 
 newl h # help is printed
 newl -h # help is printed
@@ -30,11 +30,15 @@ newl e c # theme exists and "is managed by newl": ditto; otherwise, error is pri
 newl e # select theme > theme is opened in $EDITOR
 
 newl d THEME # THEME is deleted
-newl d c # ditto but THEME is current theme; errors out if current theme is "not managed by newl"
+newl d c # ditto but THEME is current theme
 newl d # you need to specify a theme explicitly
 
 newl u THEME # current settings (according to wal) are applied to THEME
 newl u c # ditto but THEME is current theme; errors out if current theme is "not managed by newl"
 newl u # select theme > updated
+
+newl p THEME # theme's post-application script is opened in EDITOR
+newl p c # ditto but THEME is current theme
+newl p # select theme > ditto
 
 newl NON_VALID_COMMAND # errors out
