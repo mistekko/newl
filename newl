@@ -29,7 +29,7 @@ xresources="$XDG_CONFIG_HOME/X11/Xresources"
 # loaded with my settings, but you'll want to adjust to your
 # setup
 update () {
-	sh cosmic-set-bg "$theme_dir/$arg/wallpaper"
+	cosmic_set_bg "$theme_dir/$arg/wallpaper"
 	emacsclient -ue "(progn (load-theme 'ewal-spacemacs-modern)
 (modify-all-frames-parameters '((alpha-background . $alpha)))
 (adjust-region-faces))" &
@@ -82,6 +82,20 @@ ensure_arg_c_possible () {
 		echo "Exiting..."
 		exit 1
 	fi
+}
+
+cosmic_set_bg () {
+	if [ "$(echo "$1" | cut -c 1)" != "/" ]; then
+		echo "Cosmic needs an absolute path"
+		exit 1
+	fi
+
+	config_file="$HOME/.config/cosmic/com.system76.CosmicBackground/v1/all"
+	head="$(head -n 2 "$config_file")"
+	tail="$(tail -n 6 "$config_file")"
+	echo "$head
+    source: Path(\"$(realpath "$1")\"),
+$tail" > "$config_file"
 }
 
 command="$1"
