@@ -28,13 +28,14 @@ xresources="$XDG_CONFIG_HOME/X11/Xresources"
 # loaded with my settings, but you'll want to adjust to your
 # setup
 update () {
-		emacsclient -ue "(progn (load-theme 'ewal-spacemacs-modern)
+	sh cosmic-set-bg "$theme_dir/$arg/wallpaper"
+	emacsclient -ue "(progn (load-theme 'ewal-spacemacs-modern)
 (modify-all-frames-parameters '((alpha-background . $alpha)))
 (adjust-region-faces))" &
-		xrdb "$xresources" > /dev/null &
-		dwmc xrdb &
-		pywalfox update > /dev/null &
-		[ -e "$prefix/post-app.sh" ] && sh "$prefix/post-app.sh"
+	xrdb "$xresources" > /dev/null &
+	dwmc xrdb &
+	pywalfox update > /dev/null &
+	[ -e "$prefix/post-app.sh" ] && sh "$prefix/post-app.sh"
 }
 
 validate_theme () {

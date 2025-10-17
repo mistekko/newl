@@ -1,0 +1,13 @@
+#! /usr/bin/env sh
+
+if [ "$(echo "$1" | cut -c 1)" != "/" ]; then
+	echo "Sorrz! We need an absolute path!!"
+	exit 1
+fi
+
+config_file="/home/mistekko/.config/cosmic/com.system76.CosmicBackground/v1/all"
+head="$(head -n 2 "$config_file")"
+tail="$(tail -n 6 "$config_file")"
+echo "$head 
+    source: Path(\"$(realpath "$1")\"),
+$tail" > "$config_file"
