@@ -5,7 +5,7 @@
 
 newl is a Pywal theme manager which encourages the user to store and manually tweak their themes rather than simply passing an argument to the =-i= flag and calling it a day. It currently is mainly tested on X11 but is extensible enough that basic support for competent Wayland compositors should be trivial to add. 
 
- Proper integration with proper desktop environments is, for the most part, missing; I do not usually use a proper desktop environment so I cannot easily test it on one. Currently there only exists integration with icewm's menu and an experimental script for setting the background in COSMIC. 
+Proper integration with proper desktop environments is, for the most part, missing; I do not usually use a proper desktop environment so I cannot easily test it on one. Currently there only exists integration with icewm's menu and an experimental script for setting the background in COSMIC.
 
 If you'd like me to integrate support for your desktop environment, don't be afraid to open an issue; I'll happily see what I can do.
 
