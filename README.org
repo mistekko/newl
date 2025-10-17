@@ -3,13 +3,20 @@
 #+attr_html: :width 400px
 [[./preview.gif]]
 
-newl is a Pywal theme manager which encourages the user to store and manually tweak their themes rather than simply passing an argument to the =-i= flag and calling it a day.
+newl is a Pywal theme manager which encourages the user to store and manually tweak their themes rather than simply passing an argument to the =-i= flag and calling it a day. It currently is mainly tested on X11 but is extensible enough that basic support for competent Wayland compositors should be trivial to add. 
+
+ Proper integration with proper desktop environments is, for the most part, missing; I do not usually use a proper desktop environment so I cannot easily test it on one. Currently there only exists integration with icewm's menu and an experimental script for setting the background in COSMIC. 
+
+If you'd like me to integrate support for your desktop environment, don't be afraid to open an issue; I'll happily see what I can do.
 
 ** Features
 
 - pick your theme from the command line, via dmenu, or graphically via =[n]sxiv=
 - edit, update, or delete active theme with a single command
 - set a random theme
+- easily customise scope and mechanics of theme application via [{ba|z|k}]sh
+- automatically generate icons for themes to aid integration with graphical applications
+- store textual information about wallpapers. If you have wallpaper of a city, why not write a short bit about the city or the buildings in view?
 
 ** Installation
 
@@ -32,4 +39,9 @@ First, you'll need a theme. Make one the normal way (=wal -i <image>=).
 Then, come up with a name for the theme, say, =<theme>=, and run =newl n <theme>=.
 Your theme should be created. Run =newl l= to verify.
 You can apply this theme at any time with =newl a <theme>=.
+
+You'll probably want to change which applications the theme gets applied to or how it gets applied to them. You have two ways of doing this:
+- editing the =update= function in the source code
+- create and edit the post-application script via =newl p <theme>= (make sure EDITOR is set)
+
 For more information, try =newl -h=... or just read the source code.
