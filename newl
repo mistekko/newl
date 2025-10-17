@@ -2,6 +2,7 @@
 
 . "$HOME/.cache/wal/colors.sh"
 dmenu_cmd="dmenu -p theme:  -nb $color0 -nf $color7 -sb $color9 -sf $color15"
+sxiv_cmd="sxiv" # should support the same options as sxiv; specifically: bortN
 theme_dir="$HOME/.local/share/wal-themes"
 name="$(basename "$0")"
 usage_message="Usage:
@@ -101,7 +102,7 @@ case "$command" in
 		newl a "$(newl l | shuf -n 1)" ;;
 	"s")
 		# customise WM_CLASS/instance so our sxiv can be targeted by WMs
-		arg="$(sxiv -N "newl" -bort "$HOME/.local/share/wal-themes"/*/wallpaper)"
+		arg="$($sxiv_cmd -N "newl" -bort "$HOME/.local/share/wal-themes"/*/wallpaper)"
 		if [ -z "$arg" ]; then
 			echo "No theme selected. Exiting..."
 			exit 1
