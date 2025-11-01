@@ -1,0 +1,29 @@
+{
+    "checksum": "ac8159d390cee2f4a9e2ccdc0079f96a",
+    "wallpaper": "/home/mistekko/.local/share/wal-themes/sbsd/wallpaper",
+    "alpha": "80",
+
+    "special": {
+        "background": "#000000",
+        "foreground": "#c2c1c1",
+        "cursor": "#c2c1c1"
+    },
+    "colors": {
+        "color0": "#000000",
+        "color1": "#4a90b2",
+        "color2": "#ad82ae",
+        "color3": "#e1d3a2",
+        "color4": "#14658d",
+        "color5": "#cfa1aa",
+        "color6": "#90b8d1",
+        "color7": "#c2c1c1",
+        "color8": "#394053",
+        "color9": "#2a60b2",
+        "color10": "#ad82ae",
+        "color11": "#e1d3a2",
+        "color12": "#14658d",
+        "color13": "#cfa1aa",
+        "color14": "#90b8d1",
+        "color15": "#eeeeee"
+    }
+}

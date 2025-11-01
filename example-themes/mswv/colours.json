@@ -1,0 +1,29 @@
+{
+    "checksum": "d136b7973136f207d62cb83267488127",
+    "wallpaper": "/home/mistekko/.local/share/wal-themes/vista/wallpaper",
+    "alpha": "70",
+
+    "special": {
+        "background": "#000000",
+        "foreground": "#c4d0c8",
+        "cursor": "#c4d0c8"
+    },
+    "colors": {
+        "color0": "#000000",
+        "color1": "#217C8F",
+        "color2": "#c5d258",
+        "color3": "#2692A7",
+        "color4": "#94D54E",
+        "color5": "#0B8B8D",
+        "color6": "#0f8259",
+        "color7": "#eeeeee",
+        "color8": "#6a8271",
+        "color9": "#217C8F",
+        "color10": "#c5d258",
+        "color11": "#2692A7",
+        "color12": "#94D54E",
+        "color13": "#0B8B8D",
+        "color14": "#0f8259",
+        "color15": "#eeeeee"
+    }
+}

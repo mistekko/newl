@@ -19,7 +19,8 @@ usage_message="Usage:
 	$name p THEME           edit a theme's post-application script
         $name r                 apply random theme
         $name s                 select theme graphically and apply it
-        $name u THEME           write current pywal configuration to 'THEME'"
+        $name u THEME           write current pywal configuration to 'THEME'
+        $name install THEME*    install all supplied THEMEs"
 
 icon_size="16" # for theme icon generation, e.g. for icewm menus
 isxis="${icon_size}x${icon_size}"
@@ -183,6 +184,21 @@ case "$command" in
 	"u")
 		ensure_arg_c_possible
 		$0 n "$arg" "--force" ;;
+	"install")
+		if [ -z "$2" ]; then
+			echo "this command needs an argument"
+			exit
+		fi
+		for arg in "$@"; do
+			if ! [ "$arg" = "$1" ]; then
+				test -e "${arg}/wallpaper" || \
+					echo "Warning: $arg includes no wallpaper"
+				test -e "${arg}/colours.json" || \
+					echo "Warning: $arg has no colours file"
+				mkdir -p "$theme_dir"
+				cp -R "$arg" "$theme_dir"
+			fi
+		done ;;
 	*)
 		echo "'$command' is not a valid command" >&2 ;;
 esac

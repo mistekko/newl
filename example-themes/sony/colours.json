@@ -1,0 +1,29 @@
+{
+    "checksum": "db97457b9d7049a9a60dbc06178c7a99",
+    "wallpaper": "/home/mistekko/.local/share/wal-themes/sony/wallpaper",
+    "alpha": "100",
+
+    "special": {
+        "background": "#0d0d37",
+        "foreground": "#bebebe",
+        "cursor": "#c2c2cb"
+    },
+    "colors": {
+        "color0": "#0d0d37",
+        "color1": "#a82300",
+        "color2": "#00A99e",
+        "color3": "#2E6DB3",
+        "color4": "#F3C202",
+        "color5": "#6F6F8B",
+        "color6": "#BFBDBC",
+        "color7": "#bebebe",
+        "color8": "#616176",
+        "color9": "#a82300",
+        "color10": "#00A99e",
+        "color11": "#2E6DB3",
+        "color12": "#F3C202",
+        "color13": "#6F6F8B",
+        "color14": "#BFBDBC",
+        "color15": "#bebebe"
+    }
+}
