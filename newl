@@ -25,12 +25,44 @@ usage_message="Usage:
 icon_size="16" # for theme icon generation, e.g. for icewm menus
 isxis="${icon_size}x${icon_size}"
 xresources="$XDG_CONFIG_HOME/X11/Xresources"
+conf_dir="${XDG_CONFIG_HOME-"$HOME/.config"}"
+wal_conf_dir="${conf_dir}/wal"
+wal_cache_dir="${XDG_CACHE_HOME-"$HOME/.cache"}/wal"
+
+# wal doesn't expose decimal component values and sh doesn't
+# have floating-point arithmetic out of the box
+[ -e "${wal_conf_dir}/templates/colors-decimal" ] || \
+	echo "{background.red}, {background.green}, {background.blue}
+{foreground.red}, {foreground.green}, {foreground.blue}
+{cursor.red}, {cursor.green}, {cursor.blue}
+{color0.red}, {color0.green}, {color0.blue}
+{color1.red}, {color1.green}, {color1.blue}
+{color2.red}, {color2.green}, {color2.blue}
+{color3.red}, {color3.green}, {color3.blue}
+{color4.red}, {color4.green}, {color4.blue}
+{color5.red}, {color5.green}, {color5.blue}
+{color6.red}, {color6.green}, {color6.blue}
+{color7.red}, {color7.green}, {color7.blue}
+{color8.red}, {color8.green}, {color8.blue}
+{color9.red}, {color9.green}, {color9.blue}
+{color10.red}, {color10.green}, {color10.blue}
+{color11.red}, {color11.green}, {color11.blue}
+{color12.red}, {color12.green}, {color12.blue}
+{color13.red}, {color13.green}, {color13.blue}
+{color14.red}, {color14.green}, {color14.blue}
+{color15.red}, {color15.green}, {color15.blue}" > "${wal_conf_dir}/templates/colors-decimal"
+
+cosmic_conf_dir="${conf_dir}/cosmic"
+cosmic_dark_file="$cosmic_conf_dir/com.system76.CosmicTheme.Mode/v1/is_dark"
+cosmic_bg_file="$cosmic_conf_dir/com.system76.CosmicBackground/v1/all"
 
 # customize this function according to your setup. Its pre-
 # loaded with my settings, but you'll want to adjust to your
 # setup
 update () {
 	cosmic_set_bg "$theme_dir/$arg/wallpaper"
+	cosmic_set_dark_or_light
+	cosmic_set_accent
 	emacsclient -ue "(progn (load-theme 'ewal-spacemacs-modern)
 (modify-all-frames-parameters '((alpha-background . $alpha)))
 (adjust-region-faces))" &
@@ -38,6 +70,26 @@ update () {
 	dwmc xrdb &
 	pywalfox update > /dev/null &
 	[ -e "$prefix/post-app.sh" ] && sh "$prefix/post-app.sh"
+}
+
+component () {
+	case "$1" in
+		"red"|"r"|1)
+			bound1=2
+			bound2=3 ;;
+		"green"|"g"|2)
+			bound1=4
+			bound2=5 ;;
+		"blue"|"b"|3)
+			bound1=6
+			bound2=7 ;;
+	esac
+	hex="$(echo $2 | cut -c ${bound1}-${bound2})"
+	printf "%d" "0x${hex}"
+}
+
+avg_3 () {
+	printf "$(($(($1 + $2 + $3)) / 3))"
 }
 
 validate_theme () {
@@ -91,12 +143,32 @@ cosmic_set_bg () {
 		exit 1
 	fi
 
-	config_file="$HOME/.config/cosmic/com.system76.CosmicBackground/v1/all"
-	head="$(head -n 2 "$config_file")"
-	tail="$(tail -n 6 "$config_file")"
+	head="$(head -n 2 "$cosmic_bg_file")"
+	tail="$(tail -n 6 "$cosmic_bg_file")"
 	echo "$head
     source: Path(\"$(realpath "$1")\"),
-$tail" > "$config_file"
+$tail" > "$cosmic_bg_file"
+}
+
+cosmic_set_dark_or_light () {
+	determinant="$(avg_3 "$(component 1 $background)" \
+			    "$(component 3 $background)" \
+			    "$(component 3 $background)")"
+	([ "$determinant" -lt 128 ] \
+		 && echo "true" \
+		 || echo "false") > "$cosmic_dark_file"
+}
+
+cosmic_set_accent () {
+	target="$cosmic_conf_dir"/com.system76.CosmicTheme.Dark.Builder/v1/accent
+	echo "Some((" > "$target"
+	cat "${wal_cache_dir}/colors-decimal" | head -n 5 | tail -n 1 | {
+		read -r red blue green
+		echo "    red: $red
+    green: $green,
+    blue: $blue"
+	} >> "$target"
+	echo "))" >> "$target"
 }
 
 command="$1"
