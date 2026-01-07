@@ -1,6 +1,5 @@
 #! /usr/bin/env sh
 
-. "$HOME/.cache/wal/colors.sh"
 dmenu_cmd="dmenu -p theme:  -nb $color0 -nf $color7 -sb $color9 -sf $color15"
 sxiv_cmd="sxiv" # should support the same options as sxiv; specifically: bortN
 theme_dir="$HOME/.local/share/wal-themes"
@@ -60,6 +59,7 @@ cosmic_bg_file="$cosmic_conf_dir/com.system76.CosmicBackground/v1/all"
 # loaded with my settings, but you'll want to adjust to your
 # setup
 update () {
+	. "$HOME/.cache/wal/colors.sh"
 	cosmic_set_bg "$theme_dir/$arg/wallpaper"
 	cosmic_set_dark_or_light
 	cosmic_set_accent
