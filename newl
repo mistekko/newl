@@ -6,21 +6,21 @@ sxiv_cmd="sxiv" # should support the same options as sxiv; specifically: bortN
 theme_dir="$HOME/.local/share/wal-themes"
 name="$(basename "$0")"
 usage_message="Usage:
-        $name                   choose a theme using dmenu and apply it
-        $name h/-h/--help       print this help and exit
+	$name                   choose a theme using dmenu and apply it
+	$name h/-h/--help       print this help and exit
 
-        $name a THEME           apply THEME
-        $name d THEME           delete THEME
-        $name e THEME           open THEME's colours.json in \$EDITOR ($EDITOR)
-        $name i THEME           print info on current wallpaper if such exists
-        $name l                 list valid theme names
+	$name a THEME           apply THEME
+	$name d THEME           delete THEME
+	$name e THEME           open THEME's colours.json in \$EDITOR ($EDITOR)
+	$name i THEME           print info on current wallpaper if such exists
+	$name l                 list valid theme names
 	$name l-icewm-menu      format list of themes for an icewm menu entry
-        $name n THEME           create 'THEME' from current pywal cache
+	$name n THEME           create 'THEME' from current pywal cache
 	$name p THEME           edit a theme's post-application script
-        $name r                 apply random theme
-        $name s                 select theme graphically and apply it
-        $name u THEME           write current pywal configuration to 'THEME'
-        $name install THEME*    install all supplied THEMEs"
+	$name r                 apply random theme
+	$name s                 select theme graphically and apply it
+	$name u THEME           write current pywal configuration to 'THEME'
+	$name install THEME*    install all supplied THEMEs"
 
 icon_size="16" # for theme icon generation, e.g. for icewm menus
 isxis="${icon_size}x${icon_size}"
@@ -110,11 +110,11 @@ ensure_theme () {
 
 get_current_if_ours () {
 	test="$(basename "$(grep "wallpaper" \
-	                         "$HOME/.cache/wal/colors.json" |
-	                    sed 's+/[^/]*/[^/]*$++g')")"
+				 "$HOME/.cache/wal/colors.json" |
+			    sed 's+/[^/]*/[^/]*$++g')")"
 	if [ "$test" = "$(basename "$theme_dir")" ]; then
 		arg="$(grep "wallpaper" \
-		            "$HOME/.cache/wal/colors.json" |
+			    "$HOME/.cache/wal/colors.json" |
 		       sed 's+/[^/]*$++g')"
 		arg="$(basename "$arg")"
 		return 0
@@ -195,14 +195,14 @@ case "$command" in
 			exit 1
 		fi
 		arg="$(echo "$arg" | sed 's+/wallpaper$++g' | xargs basename)"
-	        newl a "$arg" ;;
+		newl a "$arg" ;;
 	"n")
 		if [ -z "$2" ]; then
 			echo "You must supply a name for the new theme"
 			exit 1
 		elif validate_theme && [ -z "$3" ]; then
 			echo "A theme named '$arg' already exists" \
-		             "To update it, use the 'u' command" >&2
+			     "To update it, use the 'u' command" >&2
 			exit 1
 		fi
 		# extracts filename from JSON
@@ -219,14 +219,14 @@ case "$command" in
 		head -n 2 "$colours_orig" > "$colours_dest"
 		echo "    \"wallpaper\": \"$wp_dest\"," \
 		     >> "$colours_dest"
-	        tail -n 26 "$colours_orig" >> "$colours_dest"
+		tail -n 26 "$colours_orig" >> "$colours_dest"
 		magick "$wp_dest" -scale x${icon_size} - |
 			magick - -crop $isxis -format png - > "$dest_dir/icon";;
 	"a")
 		ensure_arg_c_possible
 		prefix="$theme_dir/$arg"
 		alpha="$(grep "\"alpha\": \"" "$prefix/colours.json" |
-		         grep -o -E "[0-9]{2}[0-9]?")"
+			 grep -o -E "[0-9]{2}[0-9]?")"
 		wal -f "$prefix/colours.json" > /dev/null
 		update ;;
 	"i")
@@ -274,3 +274,4 @@ case "$command" in
 	*)
 		echo "'$command' is not a valid command" >&2 ;;
 esac
+exit 0
