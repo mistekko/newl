@@ -17,21 +17,26 @@ If you'd like me to integrate support for your desktop environment, don't be afr
 - easily customise scope and mechanics of theme application via [{ba|z|k}]sh
 - automatically generate icons for themes to aid integration with graphical applications
 - store textual information about wallpapers. If you have wallpaper of a city, why not write a short bit about the city or the buildings in view?
+- decent support for IceWM and COSMIC Epoch
+- a bunch of neat-o example themes, easily installable via =newl install example-themes/*= in newl's source directory
 
 ** Installation
 
 Installation of shell scripts is trivial: simply place it in a directory in your =$PATH=. 
 
 *** Required dependencies
-- dmenu
-- Pywal16
-- ImageMagick (for icon creation; newl'll run without, but it'll print a few errors)
+- Pywal16 (and thus Python)
+- ImageMagick (for icon creation; newl'll run without but may print a few errors)
 
 *** Optional dependencies
-Use of these programs is hardcoded into the source, but it's trivial to remove them and replace them with whatever you find more suitable.
+Use of these programs is hardcoded into the source, but it's trivial to remove them and replace them with whatever you find more suitable, or just simply avoid options which use them.
 - emacs
 - pywalfox
 - dwm with the dwmc and xrdb patches
+- xrdb
+- COSMIC Epoch
+- dmenu
+- [n]sxiv
 
 ** Usage
 
