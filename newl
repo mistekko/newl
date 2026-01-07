@@ -72,9 +72,7 @@ disabled_border 1.0 0.5"
 # setup
 update () {
 	. "$HOME/.cache/wal/colors.sh"
-	cosmic_set_bg "$theme_dir/$arg/wallpaper"
-	cosmic_set_dark_or_light
-	cosmic_set_accent &
+	cosmic_update
 	emacsclient -ue "(progn (load-theme 'ewal-spacemacs-modern)
 	                        (modify-all-frames-parameters '((alpha-background .
 	                                                         $alpha)))
@@ -201,6 +199,20 @@ cosmic_set_accent () {
 	} >> "$target_tmp"
 	echo ")" >> "$target_tmp"
 	mv "$target_tmp" "$target"
+}
+
+cosmic_set_panel_alpha () {
+	for ui_element in "Panel" "Dock"; do
+		cp -f "$wal_cache_dir/alpha-decimal" \
+		      "$cosmic_conf_dir/com.system76.CosmicPanel.$ui_element/v1/opacity"
+	done
+}
+
+cosmic_update () {
+	cosmic_set_dark_or_light
+	cosmic_set_bg "$theme_dir/$arg/wallpaper" &
+	cosmic_set_accent &
+	cosmic_set_panel_alpha &
 }
 
 command="$1"
