@@ -5,21 +5,21 @@ sxiv_cmd="sxiv" # should support the same options as sxiv; specifically: bortN
 theme_dir="$HOME/.local/share/wal-themes"
 name="$(basename "$0")"
 usage_message="Usage:
-	$name                   choose a theme using dmenu and apply it
-	$name h/-h/--help       print this help and exit
+        $name                   choose a theme using dmenu and apply it
+        $name h/-h/--help       print this help and exit
 
-	$name a THEME           apply THEME
-	$name d THEME           delete THEME
-	$name e THEME           open THEME's colours.json in \$EDITOR ($EDITOR)
-	$name i THEME           print info on current wallpaper if such exists
-	$name l                 list valid theme names
-	$name l-icewm-menu      format list of themes for an icewm menu entry
-	$name n THEME           create 'THEME' from current pywal cache
-	$name p THEME           edit a theme's post-application script
-	$name r                 apply random theme
-	$name s                 select theme graphically and apply it
-	$name u THEME           write current pywal configuration to 'THEME'
-	$name install THEME*    install all supplied THEMEs"
+        $name a THEME           apply THEME
+        $name d THEME           delete THEME
+        $name e THEME           open THEME's colours.json in \$EDITOR ($EDITOR)
+        $name i THEME           print info on current wallpaper if such exists
+        $name l                 list valid theme names
+        $name l-icewm-menu      format list of themes for an icewm menu entry
+        $name n THEME           create 'THEME' from current pywal cache
+        $name p THEME           edit a theme's post-application script
+        $name r                 apply random theme
+        $name s                 select theme graphically and apply it
+        $name u THEME           write current pywal configuration to 'THEME'
+        $name install THEME*    install all supplied THEMEs"
 
 icon_size="16" # for theme icon generation, e.g. for icewm menus
 isxis="${icon_size}x${icon_size}"
@@ -30,8 +30,8 @@ wal_cache_dir="${XDG_CACHE_HOME-"$HOME/.cache"}/wal"
 
 # wal doesn't expose decimal component values and sh doesn't
 # have floating-point arithmetic out of the box
-[ -e "${wal_conf_dir}/templates/colors-decimal" ] || \
-	echo "{background.red}, {background.green}, {background.blue}
+[ -e "${wal_conf_dir}/templates/colors-decimal" ] \
+	|| echo "{background.red}, {background.green}, {background.blue}
 {foreground.red}, {foreground.green}, {foreground.blue}
 {cursor.red}, {cursor.green}, {cursor.blue}
 {color0.red}, {color0.green}, {color0.blue}
@@ -64,8 +64,9 @@ update () {
 	cosmic_set_dark_or_light
 	cosmic_set_accent
 	emacsclient -ue "(progn (load-theme 'ewal-spacemacs-modern)
-(modify-all-frames-parameters '((alpha-background . $alpha)))
-(adjust-region-faces))" &
+	                        (modify-all-frames-parameters '((alpha-background .
+	                                                         $alpha)))
+	                        (adjust-region-faces))" &
 	xrdb "$xresources" > /dev/null &
 	dwmc xrdb &
 	pywalfox update > /dev/null &
@@ -100,22 +101,17 @@ validate_theme () {
 ensure_theme () {
 	if [ -z "$arg" ]; then
 		arg="$(ls "$theme_dir" | $dmenu_cmd)"
-		[ -z "$arg" ] &&
-			echo "No theme chosen." >&2 &&
-			return 1
+		[ -z "$arg" ] && echo "No theme chosen." >&2 && return 1
 	fi
-	validate_theme || (echo "'$arg' is not a valid theme." >&2 &&
-			   return 1)
+	validate_theme || (echo "'$arg' is not a valid theme." >&2 && return 1)
 }
 
 get_current_if_ours () {
-	test="$(basename "$(grep "wallpaper" \
-				 "$HOME/.cache/wal/colors.json" |
-			    sed 's+/[^/]*/[^/]*$++g')")"
+	test="$(basename "$(grep "wallpaper" "$HOME/.cache/wal/colors.json" \
+	                    | sed 's+/[^/]*/[^/]*$++g')")"
 	if [ "$test" = "$(basename "$theme_dir")" ]; then
-		arg="$(grep "wallpaper" \
-			    "$HOME/.cache/wal/colors.json" |
-		       sed 's+/[^/]*$++g')"
+		arg="$(grep "wallpaper" "$HOME/.cache/wal/colors.json" \
+		       | sed 's+/[^/]*$++g')"
 		arg="$(basename "$arg")"
 		return 0
 	else
@@ -152,11 +148,11 @@ $tail" > "$cosmic_bg_file"
 
 cosmic_set_dark_or_light () {
 	determinant="$(avg_3 "$(component 1 $background)" \
-			    "$(component 3 $background)" \
-			    "$(component 3 $background)")"
+	                     "$(component 3 $background)" \
+	                     "$(component 3 $background)")"
 	([ "$determinant" -lt 128 ] \
-		 && echo "true" \
-		 || echo "false") > "$cosmic_dark_file"
+		&& echo "true" \
+		|| echo "false") > "$cosmic_dark_file"
 }
 
 cosmic_set_accent () {
@@ -207,8 +203,8 @@ case "$command" in
 		fi
 		# extracts filename from JSON
 		dest_dir="$theme_dir/$arg"
-		wp_orig="$(grep wallpaper "$HOME/.cache/wal/colors.json" |
-				      cut -c 19- | sed s/..$//g)"
+		wp_orig="$(grep wallpaper "$HOME/.cache/wal/colors.json" \
+		           | cut -c 19- | sed s/..$//g)"
 		colours_orig="$HOME/.cache/wal/colors.json"
 		wp_dest="$dest_dir/wallpaper"
 		colours_dest="$dest_dir/colours.json"
@@ -218,15 +214,16 @@ case "$command" in
 		# unnecessarily complex
 		head -n 2 "$colours_orig" > "$colours_dest"
 		echo "    \"wallpaper\": \"$wp_dest\"," \
-		     >> "$colours_dest"
+			>> "$colours_dest"
 		tail -n 26 "$colours_orig" >> "$colours_dest"
-		magick "$wp_dest" -scale x${icon_size} - |
-			magick - -crop $isxis -format png - > "$dest_dir/icon";;
+		magick "$wp_dest" -scale x${icon_size} - \
+			| magick - -crop $isxis -format png - \
+			> "$dest_dir/icon";;
 	"a")
 		ensure_arg_c_possible
 		prefix="$theme_dir/$arg"
-		alpha="$(grep "\"alpha\": \"" "$prefix/colours.json" |
-			 grep -o -E "[0-9]{2}[0-9]?")"
+		alpha="$(grep "\"alpha\": \"" "$prefix/colours.json" \
+			 | grep -o -E "[0-9]{2}[0-9]?")"
 		wal -f "$prefix/colours.json" > /dev/null
 		update ;;
 	"i")
@@ -240,8 +237,8 @@ case "$command" in
 		if [ -e "$theme_dir/$arg/post-app.sh" ]; then
 			$EDITOR "$theme_dir/$arg/post-app.sh"
 		else
-			printf "#! /usr/bin/env sh\n\n" > \
-			       "$theme_dir/$arg/post-app.sh"
+			printf "#! /usr/bin/env sh\n\n" \
+				> "$theme_dir/$arg/post-app.sh"
 			$0 p "$arg"
 		fi ;;
 	"d")
@@ -263,10 +260,10 @@ case "$command" in
 		fi
 		for arg in "$@"; do
 			if ! [ "$arg" = "$1" ]; then
-				test -e "${arg}/wallpaper" || \
-					echo "Warning: $arg includes no wallpaper"
-				test -e "${arg}/colours.json" || \
-					echo "Warning: $arg has no colours file"
+				test -e "${arg}/wallpaper" \
+					|| echo "Warning: $arg includes no wallpaper"
+				test -e "${arg}/colours.json" \
+					|| echo "Warning: $arg has no colours file"
 				mkdir -p "$theme_dir"
 				cp -R "$arg" "$theme_dir"
 			fi
