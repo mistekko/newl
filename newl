@@ -308,12 +308,18 @@ case "$command" in
 		fi
 		for arg in "$@"; do
 			if ! [ "$arg" = "$1" ]; then
-				test -e "${arg}/wallpaper" \
+				[ -e "${arg}/wallpaper" ] \
 					|| echo "Warning: $arg includes no wallpaper"
-				test -e "${arg}/colours.json" \
+				[ -e "${arg}/colours.json" ] \
 					|| echo "Warning: $arg has no colours file"
-				mkdir -p "$theme_dir"
-				cp -R "$arg" "$theme_dir"
+
+				if [ -e "$theme_dir/$(basename "$arg")" ]; then
+					echo "Theme $arg is already installed" \
+					     " and will not be overwritten"
+				else
+					mkdir -p "$theme_dir"
+					cp -R "$arg" "$theme_dir"
+				fi
 			fi
 		done ;;
 	*)
