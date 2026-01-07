@@ -71,7 +71,7 @@ disabled_border 1.0 0.5"
 # loaded with my settings, but you'll want to adjust to your
 # setup
 update () {
-	. "$HOME/.cache/wal/colors.sh"
+	. "$wal_cache_dir"/colors.sh
 	cosmic_update
 	emacsclient -ue "(progn (load-theme 'ewal-spacemacs-modern)
 	                        (modify-all-frames-parameters '((alpha-background .
@@ -121,10 +121,10 @@ ensure_theme () {
 }
 
 get_current_if_ours () {
-	test="$(basename "$(grep "wallpaper" "$HOME/.cache/wal/colors.json" \
+	test="$(basename "$(grep "wallpaper" "$wal_cache_dir"/colors.json \
 	                    | sed 's+/[^/]*/[^/]*$++g')")"
 	if [ "$test" = "$(basename "$theme_dir")" ]; then
-		arg="$(grep "wallpaper" "$HOME/.cache/wal/colors.json" \
+		arg="$(grep "wallpaper" "$wal_cache_dir"/colors.json \
 		       | sed 's+/[^/]*$++g')"
 		arg="$(basename "$arg")"
 		return 0
@@ -179,7 +179,7 @@ cosmic_set_accent () {
 	# the last write and COSMIC switches back to a preset colour
 	target_tmp="$target".tmp #
 	echo "(" > "$target_tmp"
-	cat "${wal_cache_dir}/colors-decimal" | head -n 5 | tail -n 1 | {
+	cat "$wal_cache_dir"/colors-decimal | head -n 5 | tail -n 1 | {
 		read -r red green blue
 		IFS="
 "
@@ -203,7 +203,7 @@ cosmic_set_accent () {
 
 cosmic_set_panel_alpha () {
 	for ui_element in "Panel" "Dock"; do
-		cp -f "$wal_cache_dir/alpha-decimal" \
+		cp -f "$wal_cache_dir"/alpha-decimal \
 		      "$cosmic_conf_dir/com.system76.CosmicPanel.$ui_element/v1/opacity"
 	done
 }
@@ -233,7 +233,7 @@ case "$command" in
 		newl a "$(newl l | shuf -n 1)" ;;
 	"s")
 		# customise WM_CLASS/instance so our sxiv can be targeted by WMs
-		arg="$($sxiv_cmd -N "newl" -bort "$HOME/.local/share/wal-themes"/*/wallpaper)"
+		arg="$($sxiv_cmd -N "newl" -bort "$theme_dir"/*/wallpaper)"
 		if [ -z "$arg" ]; then
 			echo "No theme selected. Exiting..."
 			exit 1
@@ -251,9 +251,9 @@ case "$command" in
 		fi
 		# extracts filename from JSON
 		dest_dir="$theme_dir/$arg"
-		wp_orig="$(grep wallpaper "$HOME/.cache/wal/colors.json" \
+		wp_orig="$(grep wallpaper "$wal_cache_dir"/colors.json \
 		           | cut -c 19- | sed s/..$//g)"
-		colours_orig="$HOME/.cache/wal/colors.json"
+		colours_orig="$wal_cache_dir"/colors.json
 		wp_dest="$dest_dir/wallpaper"
 		colours_dest="$dest_dir/colours.json"
 		mkdir -p "$dest_dir"
