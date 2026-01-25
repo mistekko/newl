@@ -95,8 +95,15 @@ update () {
 	[ -e "$prefix/post-app.sh" ] && sh "$prefix/post-app.sh"
 }
 
-pmath () {
-	python -c "print( $1 )"
+bc_math () {
+	# this function is used mainly for performing floatiing-point
+	# math on 8-bit colour components. Limiting `scale' to three
+	# still allows for more precision (1000 vs 256) than 8-bit.
+	#
+	# also not that bc's output may not be compatible with all
+	# program's; here it's only useable because Cosmic's config
+	# parser is utterly forgiving
+	echo "scale = 3; $1" | bc
 }
 
 component () {
@@ -205,9 +212,9 @@ cosmic_write_colour_scheme () {
 				read -r name mult alpha
 				echo "\
     $name: (
-	red: $(pmath "${red} * $mult"),
-	green: $(pmath "${green} * $mult"),
-	blue: $(pmath "${blue} * $mult"),
+	red: $(bc_math "${red} * $mult"),
+	green: $(bc_math "${green} * $mult"),
+	blue: $(bc_math "${blue} * $mult"),
 	alpha: ${alpha},
     ),"
 			}
