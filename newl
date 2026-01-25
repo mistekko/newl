@@ -234,8 +234,8 @@ cosmic_set_panel_alpha () {
 cosmic_update () {
 	cosmic_set_dark_or_light
 	cosmic_set_bg "$theme_dir/$arg/wallpaper" &
-	cosmic_write_colour_scheme accent "$cosmic_accent_dict"
-	cosmic_write_colour_scheme accent_button "$cosmic_accent_button_dict"
+	cosmic_write_colour_scheme accent "$cosmic_accent_dict" &
+	cosmic_write_colour_scheme accent_button "$cosmic_accent_button_dict" &
 	cosmic_set_panel_alpha &
 }
 
