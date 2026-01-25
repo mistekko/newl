@@ -3,9 +3,9 @@
 #+attr_html: :width 400px
 [[./preview.gif]]
 
-newl is a Pywal theme manager which encourages the user to store and manually tweak their themes rather than simply passing an argument to the =-i= flag and calling it a day. It currently is mainly tested on X11 but is extensible enough that basic support for competent Wayland compositors should be trivial to add. 
+newl is a Pywal theme manager which encourages the user to store and manually tweak their themes rather than simply passing an argument to Pywal's =-i= flag and calling it a day. It is display-system agnostic; I currently use it both on DWM and COSMIC with the same configuration. 
 
-Proper integration with proper desktop environments is, for the most part, missing; I do not usually use a proper desktop environment so I cannot easily test it on one. Currently there only exists integration with icewm's menu and an experimental script for setting the background in COSMIC.
+Proper integration with proper desktop environments is, for the most part, missing; I do not usually use a proper desktop environment so I cannot easily test it on one. Currently there only exist integration with icewm's menu and support for setting accent colours, theme darkness, and transparency in COSMIC.
 
 If you'd like me to integrate support for your desktop environment, don't be afraid to open an issue; I'll happily see what I can do.
 
@@ -22,11 +22,11 @@ If you'd like me to integrate support for your desktop environment, don't be afr
 
 ** Installation
 
-Installation of shell scripts is trivial: simply place it in a directory in your =$PATH=. 
+Installation of shell scripts is trivial: simply place it in a directory listed in =$PATH=. 
 
 *** Required dependencies
 - Pywal16 (and thus Python)
-- ImageMagick (for icon creation; newl'll run without but may print a few errors)
+- bc (if using the COSMIC extensions)
 
 *** Optional dependencies
 Use of these programs is hardcoded into the source, but it's trivial to remove them and replace them with whatever you find more suitable, or just simply avoid options which use them.
@@ -37,6 +37,7 @@ Use of these programs is hardcoded into the source, but it's trivial to remove t
 - COSMIC Epoch
 - dmenu
 - [n]sxiv
+- ImageMagick
 
 ** Usage
 
@@ -47,6 +48,6 @@ You can apply this theme at any time with =newl a <theme>=.
 
 You'll probably want to change which applications the theme gets applied to or how it gets applied to them. You have two ways of doing this:
 - editing the =update= function in the source code
-- create and edit the post-application script via =newl p <theme>= (make sure EDITOR is set)
+- create and edit the post-application script via =newl p <theme>= (make sure =$EDITOR= is set)
 
 For more information, try =newl -h=... or just read the source code.
