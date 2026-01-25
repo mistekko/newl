@@ -66,6 +66,18 @@ disabled 1.0 1.0
 on_disabled 0.5 1.0
 border 1.0 1.0
 disabled_border 1.0 0.5"
+cosmic_accent_button_dict="base 1.0 1.0
+hover 1.0 1.0
+pressed 0.5 1.0
+selected 1.0 1.0
+selected_text 1.0 1.0
+focus 1.0 1.0
+divider 0.0 1.0
+on 0.0 1.0
+disabled 1.0 1.0
+on_disabled 0.5 0.5
+border 1.0 1.0
+disabled_border 1.0 0.5"
 
 # customize this function according to your setup. Its pre-
 # loaded with my settings, but you'll want to adjust to your
@@ -173,27 +185,31 @@ cosmic_set_dark_or_light () {
 	fi
 }
 
-cosmic_set_accent () {
-	target="$cosmic_conf_dir/com.system76.CosmicTheme.$cosmic_theme_mode/v1/accent"
+# args:
+#   1: file name of target colour-scheme
+#   2: colour dict; see variable `cosmic_accent_dict'
+cosmic_write_colour_scheme () {
+	target="$cosmic_conf_dir/com.system76.CosmicTheme.$cosmic_theme_mode/v1/$1"
 	# if we write colours incrementally, the file is invalid until
-	# the last write and COSMIC switches back to a preset colour
-	target_tmp="$target".tmp #
+	# the last write; in the meantime COSMIC switches from using
+	# whatever colours are in the file to using preset colours
+	target_tmp="$target".tmp
 	echo "(" > "$target_tmp"
 	cat "$wal_cache_dir"/colors-decimal | head -n 5 | tail -n 1 | {
 		read -r red green blue
 		IFS="
 "
-		for colour in $cosmic_accent_dict; do
+		for colour in $2; do
 			IFS=" "
 			echo "$colour" | {
 				read -r name mult alpha
-				printf "\
-    %s: (
+				echo "\
+    $name: (
 	red: $(pmath "${red} * $mult"),
 	green: $(pmath "${green} * $mult"),
 	blue: $(pmath "${blue} * $mult"),
 	alpha: ${alpha},
-    ),\n" "$name"
+    ),"
 			}
 		done
 	} >> "$target_tmp"
@@ -211,7 +227,8 @@ cosmic_set_panel_alpha () {
 cosmic_update () {
 	cosmic_set_dark_or_light
 	cosmic_set_bg "$theme_dir/$arg/wallpaper" &
-	cosmic_set_accent &
+	cosmic_write_colour_scheme accent "$cosmic_accent_dict"
+	cosmic_write_colour_scheme accent_button "$cosmic_accent_button_dict"
 	cosmic_set_panel_alpha &
 }
 
